@@ -45,6 +45,7 @@ public class LogFileConversion {
 			}
 	    }
 		BufferedWriter bw = new BufferedWriter(fw);
+		bw.write("file1");
 		bw.write(fileContent2);
 		bw.close();
 		return middleFilePath;
@@ -94,12 +95,14 @@ public class LogFileConversion {
 		
 		try {
 	
+			String Exception = "exception";
 			String sCurrentLine;
 			br = new BufferedReader(new FileReader(fileName));
 			bw.write("**********************************"+fileName+" start***************************\n");
 			while ((sCurrentLine = br.readLine()) != null) {
-				if (sCurrentLine.contains("exception")||sCurrentLine.contains("warning")|| sCurrentLine.contains("fault")){
+				if (sCurrentLine.contains("exception")||sCurrentLine.contains("warning")|| sCurrentLine.contains("fault")||sCurrentLine.contains("Exception")||sCurrentLine.contains("Warning")|| sCurrentLine.contains("Fault")||sCurrentLine.contains("EXCEPTION")||sCurrentLine.contains("WARNING")|| sCurrentLine.contains("FAULT")){
 					bw.write(sCurrentLine);
+					System.out.println(sCurrentLine);
 					bw.write("\n\n");
 		
 				}else{

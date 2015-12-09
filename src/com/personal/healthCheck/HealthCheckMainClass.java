@@ -28,7 +28,7 @@ public class HealthCheckMainClass {
 			lfc.extractExceptionLines(DomainFolderLocation,middleFileTempPath);
 			
 		}		
-		
+		// have to do this 
 		/*		URLChecking ur = new URLChecking();
 		String print =ur.CheckingURLs();
 		System.out.println(print);
