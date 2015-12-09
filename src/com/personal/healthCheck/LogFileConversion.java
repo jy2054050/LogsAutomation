@@ -8,21 +8,27 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class LogFileConversion {
+	
 
-	public void GetFileNames(String location) {
+	public File[] GetFileNames(String location) {
 		File folder = new File(location);
 		File[] listOfFiles = folder.listFiles();
 
 		    for (int i = 0; i < listOfFiles.length; i++) {
 		      if (listOfFiles[i].isFile()) {
 		    	  String temp=listOfFiles[i].getName();
-		    	  System.out.println(i);
-		          ReadFiles(location+"/"+temp , temp);
+		    	 
 		       } 
 		    }
+			return listOfFiles;
 	}
-	public void ReadFiles(String Location, String filename){
-		File tempFile = new File("C:/Users/jyadav/Desktop/Jitender_Yadav/sample/myTempFile1.txt");
+	
+	
+	// Method to read the file block wise and write the exception block in to new file called exception.txt
+	
+	public void FileReaderBloclWise(String filename){
+
+		File tempFile = new File("C:/Users/jyadav/Desktop/Test/sample/exception.txt");
 		BufferedReader br = null;
 		FileWriter fw = null;
 		try {
@@ -31,7 +37,6 @@ public class LogFileConversion {
 			e1.printStackTrace();
 		}
 		
-
 		if(!tempFile.exists()){
 			try {
 				tempFile.createNewFile();
@@ -40,21 +45,37 @@ public class LogFileConversion {
 			}
 	    	}
 		BufferedWriter bw = new BufferedWriter(fw);
+		
 		try {
+	
 			String sCurrentLine;
-			br = new BufferedReader(new FileReader(Location));
+			br = new BufferedReader(new FileReader(filename));
 			bw.write("**********************************"+filename+" start***************************\n");
 			while ((sCurrentLine = br.readLine()) != null) {
-				if(sCurrentLine.contains("|WARNING|") || sCurrentLine.contains("|SEVERE|")){
-					// do nothing				
-				}
-				else if ((!sCurrentLine.contains("|INFO|")) && !sCurrentLine.isEmpty()){
-					bw.write(sCurrentLine+"\n");
-				}
-			}
-			bw.write("************************************"+filename+" file done**********************************\n");
-			bw.newLine();
+				if (sCurrentLine.startsWith("[#|") && sCurrentLine.endsWith("|#]") && (sCurrentLine.contains("exception") ||sCurrentLine.contains("error")||sCurrentLine.contains("fault"))){
 		
+					bw.write(sCurrentLine);
+					bw.write("\n");
+				}else if (sCurrentLine.startsWith("[#|") && sCurrentLine.endsWith("|#]") && !(sCurrentLine.contains("exception") ||sCurrentLine.contains("error")||sCurrentLine.contains("fault"))){
+				// do nothing 	
+				}
+				if (! sCurrentLine.endsWith("|#]")){
+					bw.write(sCurrentLine);
+					
+										
+				}
+				if (sCurrentLine.endsWith("|#]") && !sCurrentLine.startsWith("[#|")){
+					bw.write("|#]");
+					
+				}
+				
+				
+			}
+			
+			bw.write("\n");
+			bw.write("************************************"+filename+" file done**********************************");
+			bw.write("\n");
+			bw.write("\n");
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
@@ -65,6 +86,6 @@ public class LogFileConversion {
 				ex.printStackTrace();
 			}
 		}
-	
+		
 	}
 }
