@@ -14,21 +14,67 @@ public class LogFileConversion {
 		File folder = new File(location);
 		File[] listOfFiles = folder.listFiles();
 
-		    for (int i = 0; i < listOfFiles.length; i++) {
-		      if (listOfFiles[i].isFile()) {
-		    	  String temp=listOfFiles[i].getName();
-		    	 
-		       } 
-		    }
-			return listOfFiles;
+		return listOfFiles;
 	}
 	
 	
-	// Method to read the file block wise and write the exception block in to new file called exception.txt
+	// method to remove line breaks 
 	
-	public void FileReaderBloclWise(String filename){
+	public String LineBreakRemove(String DomainFolderLocation,String file) throws IOException{
+		String filePath = file;
+		String middleFilePath=DomainFolderLocation+"/"+"middleman.txt";
+		System.out.println("4"+middleFilePath);
+		String fileContent;
+		
+		fileContent=readFileAsString(filePath);
+		String fileContent1=fileContent.replaceAll("\n", "");
+		String fileContent2= fileContent1.replace("|#]", "|#]\n");
+		FileWriter fw = null;
+		File middleFile = new File(middleFilePath);
+		try {
+			fw = new FileWriter(middleFile,true);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		
+		if(!middleFile.exists()){
+			try {
+				middleFile.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	    }
+		BufferedWriter bw = new BufferedWriter(fw);
+		bw.write(fileContent2);
+		bw.close();
+		return middleFilePath;
+		
+	}
+	
+	
+	// method to read file into an string
+	public String readFileAsString(String fileName) throws IOException {
+	    BufferedReader br = new BufferedReader(new FileReader(fileName));
+	    try {
+	        StringBuilder sb = new StringBuilder();
+	        String line = br.readLine();
 
-		File tempFile = new File("C:/Users/jyadav/Desktop/Test/sample/exception.txt");
+	        while (line != null) {
+	           	sb.append(line);
+	            sb.append("\n");
+	            line = br.readLine();
+	        }
+	        return sb.toString();
+	    } finally {
+	        br.close();
+	    }
+	}
+	
+	
+	// extract line containing exception , warning , fault etc
+	public void extractExceptionLines(String DomainFolderLocation,String fileName) throws IOException {
+		String excptionFileLocation =DomainFolderLocation+"/exception.txt";
+		File tempFile = new File(excptionFileLocation);
 		BufferedReader br = null;
 		FileWriter fw = null;
 		try {
@@ -49,31 +95,20 @@ public class LogFileConversion {
 		try {
 	
 			String sCurrentLine;
-			br = new BufferedReader(new FileReader(filename));
-			bw.write("**********************************"+filename+" start***************************\n");
+			br = new BufferedReader(new FileReader(fileName));
+			bw.write("**********************************"+fileName+" start***************************\n");
 			while ((sCurrentLine = br.readLine()) != null) {
-				if (sCurrentLine.startsWith("[#|") && sCurrentLine.endsWith("|#]") && (sCurrentLine.contains("exception") ||sCurrentLine.contains("error")||sCurrentLine.contains("fault"))){
-		
+				if (sCurrentLine.contains("exception")||sCurrentLine.contains("warning")|| sCurrentLine.contains("fault")){
 					bw.write(sCurrentLine);
-					bw.write("\n");
-				}else if (sCurrentLine.startsWith("[#|") && sCurrentLine.endsWith("|#]") && !(sCurrentLine.contains("exception") ||sCurrentLine.contains("error")||sCurrentLine.contains("fault"))){
+					bw.write("\n\n");
+		
+				}else{
 				// do nothing 	
 				}
-				if (! sCurrentLine.endsWith("|#]")){
-					bw.write(sCurrentLine);
-					
-										
-				}
-				if (sCurrentLine.endsWith("|#]") && !sCurrentLine.startsWith("[#|")){
-					bw.write("|#]");
-					
-				}
-				
-				
 			}
 			
 			bw.write("\n");
-			bw.write("************************************"+filename+" file done**********************************");
+			bw.write("************************************"+fileName+" file done**********************************");
 			bw.write("\n");
 			bw.write("\n");
 		} catch (IOException e) {
@@ -85,7 +120,6 @@ public class LogFileConversion {
 			} catch (IOException ex) {
 				ex.printStackTrace();
 			}
-		}
-		
 	}
-}
+		}
+	}

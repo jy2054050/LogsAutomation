@@ -1,30 +1,40 @@
 package com.personal.healthCheck;
 
 import java.io.File;
+import java.io.IOException;
 
 public class HealthCheckMainClass {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		
 		//project on git 
-	
-/*		URLChecking ur = new URLChecking();
+		String folderRoot="C:/Users/jyadav/Documents/ESB_Log_Analysis";
+		String domains[] = {"D1","D2","D3","D4","D5"};
+		
+		LogFileConversion lfc = new LogFileConversion();
+		String middleFileTempPath = null;
+		
+		for(int j=0;j<domains.length;j++){
+			String DomainFolderLocation= folderRoot+"/"+domains[j];
+			
+			System.out.println("1"+DomainFolderLocation);
+			File[] listofFiles = lfc.GetFileNames(DomainFolderLocation); 
+			
+			for(int k=0;k<listofFiles.length;k++){
+				System.out.println("2"+listofFiles[k]);
+								
+				middleFileTempPath=	lfc.LineBreakRemove(DomainFolderLocation,listofFiles[k].toString());
+			}
+			lfc.extractExceptionLines(DomainFolderLocation,middleFileTempPath);
+			
+		}		
+		
+		/*		URLChecking ur = new URLChecking();
 		String print =ur.CheckingURLs();
 		System.out.println(print);
 				*/
-		String location ="C:/Users/jyadav/Desktop/Test/sample";
-		LogFileConversion lfc = new LogFileConversion();
 		
-		File[] listofFiles = lfc.GetFileNames(location);  // get the names of all the files in the sample folder
-		//System.out.println(listofFiles);
-		
-		/*System.out.println(lfc.ConsolidateFiles(listofFiles));*/
-		//consolidate it all into one file
 
-		for (int i =0;i<listofFiles.length ; i++){
-		lfc.FileReaderBloclWise(listofFiles[i].toString());
-		}
-		System.out.println("Done Here");
 	}
 	
 }
